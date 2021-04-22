@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Argania</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon"/>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <style>
+        table{
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid #cdcdcd;
+        }
+        table th, table td{
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".add-row").click(function(){
+                var input_fields = $("#input_fields").val();
+                var output_field = $("#output_field").val();
+                var trans_rule   = $("#trans_rule").val();
+
+                var markup = "<tr><td><input type='checkbox' name='record'></td><td>" + input_fields + "</td><td>" + output_field + "</td><td>" +trans_rule+ "</td></tr>";
+                $("table tbody").append(markup);
+            });
+            
+            // Find and remove selected table rows
+            $(".delete-row").click(function(){
+                $("table tbody").find('input[name="record"]').each(function(){
+                    if($(this).is(":checked")){
+                        $(this).parents("tr").remove();
+                    }
+                });
+            });
+        });    
+    </script>
+
+    
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="/">
+                <picture>
+                    <img th:src="@{img/logo_white.png}" id="logo" alt="my illustration" width="130" height="120">
+                </picture>
+            </a>
+            <button onclick="switch_mode()" style="float: right;" id="switch_mode_button">Dark</button>
+            <button style="float: right;" onclick="onclick_template('switch_view_button')">Graph</button>
+            <button style="float: right;" onclick="onclick_template('glossary')">Glossary</button>
+            <button style="float: right;" onclick="onclick_template('naming_rules')">Naming Rules</button>
+            <button style="float: right;" onclick="onclick_template('export_button')">Export as PDF</button>
+        </div>
+    </div>
+    
+    <div class="container posts mt-0">
+        <div class="alert alert-info-light" role="alert" id="alert">
+            Not yet implemented  !
+        </div>
+    </div>
+
+    <script src="js/switch_mode.js"></script>
+    <script src="js/select_feature_type.js"></script>
+    <script src="js/switch_view_button.js"></script>
+    <script src="js/choose_template.js"></script>
+</body>
+</html>

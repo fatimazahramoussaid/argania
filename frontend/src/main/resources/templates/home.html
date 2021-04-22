@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Argania</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="/">
+                <picture>
+                    <img th:src="@{img/logo_white.png}" id="logo" alt="my illustration" width="130" height="120">
+                </picture>
+            </a>
+            <button onclick="switch_mode()" style="float: right;" id="switch_mode_button">Dark</button>
+            <button style="float: right;" onclick="onclick_template('switch_view_button')">Graph</button>
+            <button style="float: right;" onclick="onclick_template('glossary')">Glossary</button>
+            <button style="float: right;" onclick="onclick_template('naming_rules')">Naming Rules</button>
+            <button style="float: right;" onclick="onclick_template('export_button')">Export as PDF</button>
+        </div>
+    </div>
+    <div style="top:500px;right:50px;position:fixed;z-index: 1000;">
+        <a href="/newfeature" class="btn btn-primary-light mb-2" id="newfeature">New Feature</a>
+    </div>
+    <div class="container posts mt-0">
+        <div class="card my-3 col-12 card-dark" th:each="m : ${messages}" style="height: 160px;">
+            <div class="card-body col-9">
+                <h5 class="card-title" th:text="${m.title}"></h5>
+                <br/>
+                <p class="card-text text" th:text="${m.description}"></p>
+            </div>
+            <div class="col-3" style="float: right;">
+                <a th:href="'/updatefeature/' + ${m.getid()}"><button>update</button></a>
+                <a th:href="'/deletefeature/' + ${m.getid()}"><button>delete</button></a>
+                <a th:href="'/detailfeature/' + ${m.getid()}"><button>details</button></a>
+            </div>
+        </div>
+        <div class="alert alert-info-light" role="alert" id="alert" th:if="${#lists.isEmpty(messages)}">
+            No features documented.
+        </div>
+    </div>
+
+     <script src="js/switch_mode.js"></script>
+    <script src="js/select_feature_type.js"></script>
+    <script src="js/switch_view_button.js"></script>
+    <script src="js/choose_template.js"></script>
+    
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Argania</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Type" content="text/plain;text/javascript;text/css;charset=utf-8" />
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script>
+        let draw =  {
+        init:function(){
+            self=this;
+            this.clickX = new Array();
+            this.clickY = new Array();
+            this.clickDrag = new Array();
+            this.paint;
+            this.canvasDiv = document.getElementById('canvasDiv');
+            this.canvas = document.createElement('canvas');
+            this.canvas.setAttribute('width', "1000");
+            this.canvas.setAttribute('height', "1000");
+            this.canvas.setAttribute('id', 'canvas');
+            this.canvasDiv.appendChild(this.canvas);
+            if(typeof G_vmlCanvasManager !== 'undefined') {
+                this.canvas = G_vmlCanvasManager.initElement(this.canvas);
+            }
+            this.context = canvas.getContext("2d");
+ 
+            $('#canvas').mousedown(function(e){
+                var mouseX = e.pageX - this.offsetLeft;
+                var mouseY = e.pageY - this.offsetTop;
+                  
+                this.paint = true;
+                draw.addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+                draw.redraw();
+            });
+          
+            $('#canvas').mousemove(function(e){
+                if(this.paint){
+                draw.addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+                draw.redraw();
+                }
+            });     
+          
+            $('#canvas').mouseup(function(e){
+                this.paint = false;
+                $("#cloudtools").val($("#canvasDiv").html());
+            });
+          
+            $('#canvas').mouseleave(function(e){
+                this.paint = false;
+                $("#cloudtools").val($("#canvasDiv").html());
+            });
+        },
+        addClick:function(x, y, dragging){
+            this.clickX.push(x);
+            this.clickY.push(y);
+            this.clickDrag.push(dragging);
+        },
+        redraw:function(){
+                this.context.clearRect(0, 0, this.context.canvas.width, this.context.canvas.height); // Clears the canvas
+          
+                this.context.strokeStyle = "#333";
+                this.context.lineJoin = "round";
+                this.context.lineWidth = 8;
+          
+                for(var i=0; i < this.clickX.length; i++) {      
+                    this.context.beginPath();
+                    if(this.clickDrag[i] && i){
+                            this.context.moveTo(this.clickX[i-1], this.clickY[i-1]);
+                    }else{
+                            this.context.moveTo(this.clickX[i]-1, this.clickY[i]);
+                    }
+                    this.context.lineTo(this.clickX[i], this.clickY[i]);
+                    this.context.closePath();
+                    this.context.stroke();
+                }
+        },
+                clear:function(){
+            this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.clickX = new Array();
+            this.clickY = new Array();
+            this.clickDrag = new Array();
+        }
+        }
+ 
+        document.addEventListener("DOMContentLoaded", () => {
+        draw.init();
+    });
+        </script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon"/>
+    <script src="https://cdn.ckeditor.com/4.16.0/standard/ckeditor.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+    <style>
+        table{
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        table, th, td{
+            border: 1px solid #cdcdcd;
+        }
+        table th, table td{
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".add-row").click(function(){
+                var input_fields = $("#input_fields").val();
+                var output_field = $("#output_field").val();
+                var trans_rule   = $("#trans_rule").val();
+
+                var markup = "<tr><td><input type='checkbox' name='record'></td><td>" + input_fields + "</td><td>" + output_field + "</td><td>" +trans_rule+ "</td></tr>";
+                $("table tbody").append(markup);
+            });
+            
+            // Find and remove selected table rows
+            $(".delete-row").click(function(){
+                $("table tbody").find('input[name="record"]').each(function(){
+                    if($(this).is(":checked")){
+                        $(this).parents("tr").remove();
+                    }
+                });
+            });
+        });    
+    </script>
+
+    
+</head>
+
+<body>
+    <div class="header">
+        <div class="container">
+            <a href="/">
+                <picture>
+                    <img th:src="@{img/logo_white.png}" id="logo" alt="my illustration" width="130" height="120">
+                </picture>
+            </a>
+            <button onclick="switch_mode()" style="float: right;" id="switch_mode_button">Dark</button>
+            <button style="float: right;" onclick="onclick_template('switch_view_button')">Graph</button>
+            <button style="float: right;" onclick="onclick_template('glossary')">Glossary</button>
+            <button style="float: right;" onclick="onclick_template('naming_rules')">Naming Rules</button>
+            <button style="float: right;" onclick="onclick_template('export_button')">Export as PDF</button>
+        </div>
+    </div>
+
+    <!-- choose a template -->
+    <label for="template" class="text" style="margin-left: 120px;">Choose a template:</label>
+    <select id="template" name="template" onchange="choose_template()">
+        <option value="">- template name</option>
+        <option value="restful_api">Rest Api</option>
+        <option value="data_transformation">Data Transformation</option>
+        <option value="database">DataBase</option>
+        <option value="web_page">Web Page</option>
+        <option value="cloud_design">Architecture Cloud Design</option>
+        <option value="batch_process">Batch Process</option>
+        <option value="manueloperations">Manual Operations</option>
+        <option value="freestyle">Free Style</option>
+    </select>
+    <br/>
+    
+    <div class="container posts mt-0" id="data_transformation">
+        <h6 class="text">Free Style documentation</h6>
+        <form class="form-inline" method="POST" th:action="@{/post}" th:object="${formmessage}">
+            <div class="col-12">
+                <input type="text" style="width:80%;" class="form-control input-light input" placeholder="title" id="title" name="title" required>
+            </div>
+            <br/>
+            <div class="col-12" style="margin-bottom: 30px;">
+                <textarea type="text" style="width:80%;"  placeholder="description" class="form-control input-light input" id="description" name="description" required > </textarea>
+            </div>
+             <input type="text" class="form-control input-light input" id="cloudtools" name="cloudtools" hidden></input>
+            <br/>
+            <h6>Draw your design</h6>
+            <div id="canvasDiv" class="border-dark"></div> 
+            <button id="clearCanvasSimple" type="button" onclick="draw.clear()" style="top:140px;right:50px;position:fixed;z-index: 1000;" class="img-border">Clear</button>
+            
+            <br/>
+            <br/><br/>
+            <br/>
+            <button type="submit" class="btn btn-primary-light mb-2" id="saveButton" style="float:left;margin-left:80%;">Save</button>
+   
+        </form>
+    </div>
+
+
+    <script src="js/switch_mode.js"></script>
+    <script src="js/select_feature_type.js"></script>
+    <script src="js/switch_view_button.js"></script>
+    <script src="js/choose_template.js"></script>
+</body>
+</html>

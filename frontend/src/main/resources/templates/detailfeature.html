@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Argania</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/css/style.css}" type="text/css">
+    <link rel="icon" th:href="@{/img/favicon.png}" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        function parseHtmlEntities(str) {
+           str = str.split('&gt;').join('>');
+           str = str.split('&quot;').join('"');
+           str = str.split('&lt;').join('<');
+           str = str.split('ondragover="allowDrop(event)"').join('');
+           str = str.split('ondrop="drop(event)"').join('');
+           return str;
+        }
+        function htmlDecode(value){
+            return $('<div/>').html(value).text();
+        }
+        function append_schema() {
+            var shtml = "[[${feature.getcloudtools()}]]";
+            if (shtml) {
+                console.log('----------------------------------------');
+                //console.log(parseHtmlEntities(shtml));
+                // $( "#architecture_design" ).append( parseHtmlEntities(shtml));
+                $('#architecture_design').html(htmlDecode(shtml));
+                $('title_design').show();
+            } else {
+                $('title_design').hide();
+            }
+        }
+        
+    </script>
+    
+</head>
+
+<body onload="append_schema()">
+    <div class="header">
+        <div class="container">
+            <a href="/">
+                <picture>
+                    <img th:src="@{/img/logo_white.png}" id="logo" alt="my illustration" width="130" height="120">
+                </picture>
+            </a>
+            <button onclick="switch_mode()" style="float: right;" id="switch_mode_button">Dark</button>
+            <button style="float: right;" onclick="onclick_template('switch_view_button')">Graph</button>
+            <button style="float: right;" onclick="onclick_template('glossary')">Glossary</button>
+            <button style="float: right;" onclick="onclick_template('naming_rules')">Naming Rules</button>
+            <button style="float: right;" onclick="onclick_template('export_button')">Export as PDF</button>
+        </div>
+    </div>
+    <div class="container posts mt-0" style="overflow:auto;">
+           <h6 class="text">Id</h6>
+           <p class="card-text text" th:text="${feature.getid()}"></p>
+           <h6 class="text">Title</h6>
+           <p class="card-text text" th:text="${feature.getTitle()}"></p>
+           <h6 class="text">Description</h6>
+           <p class="card-text text" th:text="${feature.getDescription()}"></p>
+
+        <br/><br/><br/>
+        <h6 class="text" id="title_design">Design</h6>
+        <div id="architecture_design" class="col-12"></div>
+    </div>
+
+    <script src="/js/switch_mode.js"></script>
+    <script src="/js/select_feature_type.js"></script>
+    <script src="/js/switch_view_button.js"></script>
+    <script src="/js/choose_template.js"></script>
+    
+</body>
+</html>
