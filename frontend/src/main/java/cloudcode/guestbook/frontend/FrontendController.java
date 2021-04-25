@@ -183,8 +183,8 @@ public class FrontendController {
 
     public String sendMail(String debatesubject, String opinion, String addr, String email) {
 
-    final String username = "hackathongreatdebaters@gmail.com";
-    final String password = "hackathongreatdebaters@21";
+    final String username = "@gmail.com";
+    final String password = "pass";
 
     Properties prop = new Properties();
     prop.put("mail.smtp.host", "smtp.gmail.com");
